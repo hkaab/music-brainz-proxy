@@ -23,7 +23,13 @@ jobs:
     - name: Build
       run: dotnet build --no-restore
       working-directory: src
-    - name: Test
+    - name: Unit Test 
+      run: dotnet test  UnitTests\UnitTests.csproj --no-build --no-restore
+      working-directory: src
+    - name: Integration Test  IntegrationTests\IntegrationTests.csproj
+      run: dotnet test --no-build --no-restore
+      working-directory: src
+
       run: dotnet test --no-build --no-restore
       working-directory: src
   
