@@ -24,8 +24,8 @@ jobs:
       run: dotnet build --no-restore
       working-directory: src
     - name: Unit Test 
-      run: dotnet test  UnitTests.csproj --no-build --no-restore
-      working-directory: src\UnitTests
+      run: dotnet test  UnitTests.csproj 
+      working-directory: src/UnitTests
     - name: Integration Test 
-      run: dotnet test  IntegrationTests.csproj --no-build --no-restore
-      working-directory: src\IntegrationTests  
+      run: dotnet test  IntegrationTests.csproj
+      working-directory: src/IntegrationTests  
