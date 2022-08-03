@@ -28,8 +28,4 @@ jobs:
       working-directory: src
     - name: Integration Test  IntegrationTests\IntegrationTests.csproj
       run: dotnet test --no-build --no-restore
-      working-directory: src
-
-      run: dotnet test --no-build --no-restore
-      working-directory: src
-  
+      working-directory: src  
