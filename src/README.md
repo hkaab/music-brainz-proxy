@@ -1,6 +1,8 @@
 # Coles MusicBrainz API version 2.0 
 
 ![workflow](https://github.com/hkaabasl/MusicBrainzProxy/actions/workflows/ci.yml/badge.svg)
+![workflow](https://github.com/hkaabasl/MusicBrainzProxy/actions/workflows/ut.yml/badge.svg)
+![workflow](https://github.com/hkaabasl/MusicBrainzProxy/actions/workflows/it.yml/badge.svg)
 
 Simple and Partial Implementation of the MusicBrainz API version 2.0 (requires .NET 5.0).
 
