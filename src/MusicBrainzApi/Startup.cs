@@ -46,8 +46,6 @@ namespace MusicBrainzApi
             services.AddSingleton<IProcessingStrategy, AsyncKeyLockProcessingStrategy>();
             services.AddInMemoryRateLimiting();
 
-            services.AddRedisCache("");
-
             services.AddSwaggerGen(c =>
             {
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "Coles MusicBrainz Api", Version = "v1" });
