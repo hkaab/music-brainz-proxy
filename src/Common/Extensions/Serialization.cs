@@ -1,6 +1,6 @@
 ﻿using Newtonsoft.Json;
 
-namespace MusicBrainzApi.Extensions
+namespace Common.Extensions
 {
     public static class Serialization
     {

@@ -1,6 +1,6 @@
 ﻿using Domain;
 using Interfaces;
-using MusicBrainzApi.Extensions;
+using Common.Extensions;
 using System;
 using System.Net.Http;
 using System.Threading.Tasks;

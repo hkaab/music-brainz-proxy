@@ -1,12 +1,11 @@
 using AspNetCoreRateLimit;
+using Common.Extensions;
 using Domain;
 using IntegrationTests.Helpers;
 using Microsoft.AspNetCore.Mvc.Testing;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
 using MusicBrainzApi;
-using MusicBrainzApi.Extensions;
-using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net.Http;
@@ -21,7 +20,7 @@ namespace IntegrationTests
         public void WhenAppIsStarted_IHttpClientFactoryCreateMusicBrainzHttpClientSuccessfully()
         {
             using var factory = new WebApplicationFactory<Program>();
-            
+
             var httpClientFactory = factory.Services.GetRequiredService<IHttpClientFactory>();
             var httpClient = httpClientFactory.CreateClient("MusicBrainz");
 
@@ -69,7 +68,7 @@ namespace IntegrationTests
             var result = Serialization.FromJson<Artist>(json);
 
             Assert.IsType<Artist>(result);
-            Assert.True(result.Releases != null && result.Releases.Count>0);
+            Assert.True(result.Releases != null && result.Releases.Count > 0);
         }
 
         [Fact]
@@ -145,7 +144,7 @@ namespace IntegrationTests
             var result = Serialization.FromJson<Artist>(json);
 
             Assert.IsType<Artist>(result);
-            Assert.True(result.Releases!= null && result.Releases.Count > 0);
+            Assert.True(result.Releases != null && result.Releases.Count > 0);
         }
 
         [Fact]
@@ -162,8 +161,8 @@ namespace IntegrationTests
         {
             using var factory = new WebApplicationFactory<Program>();
             var httpClient = factory.CreateClient().WithHttpsBaseAddress();
-            var requests = new List<string> { "1", "2", "3" };
 
+            var requests = new List<string> { "1", "2", "3" };
             var allTasks = requests.Select(n => Task.Run(async () =>
             {
                 var result = await httpClient.GetStringAsync("/Artist/Query/janet%20%jackson");
