@@ -1,11 +1,8 @@
 ﻿using Domain;
 using Interfaces;
 using MusicBrainzApi.Extensions;
-using Newtonsoft.Json;
 using System;
-using System.Collections.Generic;
 using System.Net.Http;
-using System.Runtime.Serialization.Json;
 using System.Threading.Tasks;
 
 namespace Services
@@ -24,7 +21,6 @@ namespace Services
         {
             if (string.IsNullOrEmpty(id))
             {
-                //todo: store message in resources  
                 throw new ArgumentException("Artist Id must be specified.");
             }
             var uri = string.Format(GetArtistTemplate, id);
@@ -36,7 +32,6 @@ namespace Services
         {
             if (string.IsNullOrEmpty(id))
             {
-                //todo: store message in resources  
                 throw new ArgumentException("Artist Id must be specified.");
             }
             var uri = string.Format(GetReleaseTemplate, id);
@@ -49,7 +44,6 @@ namespace Services
         {
             if (string.IsNullOrEmpty(name))
             {
-                //todo: store message in resources  
                 throw new ArgumentException("Artist name must be specified.");
             }
 

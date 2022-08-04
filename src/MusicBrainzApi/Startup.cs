@@ -66,6 +66,8 @@ namespace MusicBrainzApi
 
             app.UseMiddleware<HealthCheckMiddleware>();
 
+            app.UseMiddleware<EnforceHttpsMiddleware>();
+
             app.UseHttpsRedirection();
 
             app.UseIpRateLimiting();
@@ -73,6 +75,8 @@ namespace MusicBrainzApi
             app.UseRouting();
 
             app.UseAuthorization();
+
+            app.UseMiddleware<ErrorHandlingMiddleware>();
 
             app.UseEndpoints(endpoints =>
             {
