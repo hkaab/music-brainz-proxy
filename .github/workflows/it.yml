@@ -1,10 +1,6 @@
 name: integration tests
 
 on:
-  push:
-    branches: [ "master" ]
-  pull_request:
-    branches: [ "master" ]
   workflow_run:
     workflows: ["build","unit tests"]
     types:
