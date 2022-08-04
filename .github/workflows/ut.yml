@@ -1,10 +1,6 @@
 name: unit tests
 
 on:
-  push:
-    branches: [ "master" ]
-  pull_request:
-    branches: [ "master" ]
   workflow_run:
     workflows: ["build"]
     types:
