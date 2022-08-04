@@ -82,13 +82,23 @@ namespace MusicBrainzApi.Controllers
                 if (artistCollection == null || artistCollection.Count == 0)
                     return NotFound();
 
+                var topPerformer = artistCollection.Artists.OrderByDescending(a => a.Score)
+                                                           .Where(a => a.Score == 100)
+                                                           .FirstOrDefault();
+                if (topPerformer != null)
+                {
+                    var artist = await _artistService.GetArtistByIdAsync(topPerformer.Id);
+                    return Ok(artist);
+                }
+
+
                 if (artistCollection.Count == 1)
                 {
                     var artist = await _artistService.GetArtistByIdAsync(artistCollection.Artists[0].Id);
                     return Ok(artist);
                 }
 
-                //artistCollection.Artists = artistCollection.Artists.Where(a=>a.Score>80).OrderBy(sort).ToList();
+                artistCollection.Artists = artistCollection.Artists.OrderBy(sort).ToList();
 
                 return Ok(artistCollection);
             }

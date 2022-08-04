@@ -7,7 +7,7 @@ namespace Domain
     [DataContract]
     public class ArtistCollection
     {
-        [DataMember(Name = "count")]
+        [DataMember(Name = "count", IsRequired = true)]
         public int Count { get; set; }
 
         [DataMember(Name = "offset")]

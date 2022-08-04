@@ -70,6 +70,18 @@ namespace UnitTests.Builders
             };
             return this;
         }
+        public ArtistServiceBuilder ForQueryArtistAsyncWithMultipleResultWith100Score()
+        {
+            _returnedObject = new ArtistCollection
+            {
+                Count = 2,
+                Artists = new List<Artist> {
+                    new Artist { Gender = "Female", Id = "d51fad9c-5fda-4507-b258-c7ce4b435972", Name = "Janet Jackson", Rating = null, Releases = null,Score=100},
+                    new Artist { Gender = "Male", Id = "hkjhkjhkh-5fda-4507-b258-c7ce4b435972", Name = "Jim Jackson", Rating = null, Releases = null},
+                }
+            };
+            return this;
+        }
         public ArtistService Build()
         {
             var json = JsonConvert.SerializeObject(_returnedObject);

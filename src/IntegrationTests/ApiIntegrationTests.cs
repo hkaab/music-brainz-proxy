@@ -50,10 +50,16 @@ namespace IntegrationTests
             var response = await httpClient.GetAsync("/Artist/QueryArtistAsync/jackson");
             response.EnsureSuccessStatusCode();
             var json = await response.Content.ReadAsStringAsync();
-            var result = Serialization.FromJson<ArtistCollection>(json);
-
-            Assert.IsType<ArtistCollection>(result);
-            Assert.True(result.Count > 1);
+            dynamic result = Serialization.FromJson<ArtistCollection>(json);
+            if (result != null)
+            {
+                Assert.True(result.Count > 1);
+            }
+            else
+            {
+                result = Serialization.FromJson<Artist>(json);
+                Assert.True(result.Id != null);
+            }
         }
 
         [Fact]
