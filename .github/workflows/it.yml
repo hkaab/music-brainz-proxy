@@ -5,10 +5,12 @@ on:
     branches: [ "master" ]
   pull_request:
     branches: [ "master" ]
-
+  workflow_run:
+    workflows: ["build","unit tests"]
+    types:
+      - completed
 jobs:
-  build:
-
+  test:
     runs-on: ubuntu-latest
 
     steps:

@@ -5,7 +5,10 @@ on:
     branches: [ "master" ]
   pull_request:
     branches: [ "master" ]
-
+  workflow_run:
+    workflows: ["build"]
+    types:
+      - completed
 jobs:
   build:
 
