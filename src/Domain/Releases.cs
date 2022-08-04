@@ -6,10 +6,10 @@ namespace Domain
     [DataContract]
     public class ReleaseCollection
     {
-        [DataMember(Name = "release-count")]
+        [DataMember(Name = "count")]
         public int Count { get; set; }
 
-        [DataMember(Name = "release-offset")]
+        [DataMember(Name = "offset")]
         public int Offset { get; set; }
 
         [DataMember(Name = "releases")]
