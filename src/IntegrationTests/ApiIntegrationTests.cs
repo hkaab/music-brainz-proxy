@@ -1,10 +1,12 @@
 using AspNetCoreRateLimit;
 using Domain;
+using IntegrationTests.Helpers;
 using Microsoft.AspNetCore.Mvc.Testing;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
 using MusicBrainzApi;
 using MusicBrainzApi.Extensions;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net.Http;
@@ -45,8 +47,7 @@ namespace IntegrationTests
         public async Task WhenQueryArtistAsyncRequest_WithArtistName_Status200IsReturnedWithArtistCollection()
         {
             using var factory = new WebApplicationFactory<Program>();
-            var httpClient = factory.CreateClient();
-
+            var httpClient = factory.CreateClient().WithHttpsBaseAddress();
             var response = await httpClient.GetAsync("/Artist/QueryArtistAsync/jackson");
             response.EnsureSuccessStatusCode();
             var json = await response.Content.ReadAsStringAsync();
@@ -60,7 +61,7 @@ namespace IntegrationTests
         public async Task WhenGetArtistByIdAsyncRequest_WithValidArtistId_Status200IsReturnedWithArtistDetails()
         {
             using var factory = new WebApplicationFactory<Program>();
-            var httpClient = factory.CreateClient();
+            var httpClient = factory.CreateClient().WithHttpsBaseAddress();
 
             var response = await httpClient.GetAsync("/Artist/GetArtistByIdAsync/6be2828f-6c0d-4059-99d4-fa18acf1a296");
             response.EnsureSuccessStatusCode();
@@ -75,7 +76,7 @@ namespace IntegrationTests
         public async Task WhenGetArtistByIdAsyncRequest_WithNotExistedName_Status404NotFoundResult()
         {
             using var factory = new WebApplicationFactory<Program>();
-            var httpClient = factory.CreateClient();
+            var httpClient = factory.CreateClient().WithHttpsBaseAddress();
             var response = await httpClient.GetAsync("/Artist/GetArtistByIdAsync/fjkljdkljklfjklfj");
             Assert.Equal(System.Net.HttpStatusCode.NotFound, response.StatusCode);
         }
@@ -83,7 +84,7 @@ namespace IntegrationTests
         public async Task WhenArtistRouteRequest_WithValidArtistId_Status200IsReturnedWithArtistDetails()
         {
             using var factory = new WebApplicationFactory<Program>();
-            var httpClient = factory.CreateClient();
+            var httpClient = factory.CreateClient().WithHttpsBaseAddress();
 
             var response = await httpClient.GetAsync("/Artist/6be2828f-6c0d-4059-99d4-fa18acf1a296");
             response.EnsureSuccessStatusCode();
@@ -98,7 +99,7 @@ namespace IntegrationTests
         public async Task WhenGetArtistReleaseAsyncRequest_WithValidArtistId_Status200IsReturnedWithArtistDetails()
         {
             using var factory = new WebApplicationFactory<Program>();
-            var httpClient = factory.CreateClient();
+            var httpClient = factory.CreateClient().WithHttpsBaseAddress();
 
             var response = await httpClient.GetAsync("/Artist/GetArtistReleaseAsync/6be2828f-6c0d-4059-99d4-fa18acf1a296");
             response.EnsureSuccessStatusCode();
@@ -113,7 +114,7 @@ namespace IntegrationTests
         public async Task WhenArtistReleaseRouteRequest_WithValidArtistId_Status200IsReturnedWithArtistDetails()
         {
             using var factory = new WebApplicationFactory<Program>();
-            var httpClient = factory.CreateClient();
+            var httpClient = factory.CreateClient().WithHttpsBaseAddress();
 
             var response = await httpClient.GetAsync("/Artist/Release/6be2828f-6c0d-4059-99d4-fa18acf1a296");
             response.EnsureSuccessStatusCode();
@@ -128,7 +129,7 @@ namespace IntegrationTests
         public async Task WhenArtistReleaseRouteRequest_WithNotExistedName_Status404NotFoundResult()
         {
             using var factory = new WebApplicationFactory<Program>();
-            var httpClient = factory.CreateClient();
+            var httpClient = factory.CreateClient().WithHttpsBaseAddress();
             var response = await httpClient.GetAsync("/Artist/Release/fjkljdkljklfjklfj");
             Assert.Equal(System.Net.HttpStatusCode.NotFound, response.StatusCode);
         }
@@ -136,7 +137,7 @@ namespace IntegrationTests
         public async Task WhenQueryArtistAsyncRequest_WithExactMatchArtistName_Status200IsReturnedWithArtistAndRelease()
         {
             using var factory = new WebApplicationFactory<Program>();
-            var httpClient = factory.CreateClient();
+            var httpClient = factory.CreateClient().WithHttpsBaseAddress();
 
             var response = await httpClient.GetAsync("/Artist/Query/janet%20%jackson");
             response.EnsureSuccessStatusCode();
@@ -151,7 +152,7 @@ namespace IntegrationTests
         public async Task WhenQueryArtistAsyncRequest_WithNotExistedName_Status404NotFoundResult()
         {
             using var factory = new WebApplicationFactory<Program>();
-            var httpClient = factory.CreateClient();
+            var httpClient = factory.CreateClient().WithHttpsBaseAddress();
             var response = await httpClient.GetAsync("/Artist/Query/fgfdgfdgfdgfdg");
             Assert.Equal(System.Net.HttpStatusCode.NotFound, response.StatusCode);
         }
@@ -160,7 +161,7 @@ namespace IntegrationTests
         public async Task WhenExceedRateLimit_ExpectException()
         {
             using var factory = new WebApplicationFactory<Program>();
-            var httpClient = factory.CreateClient();
+            var httpClient = factory.CreateClient().WithHttpsBaseAddress();
             var requests = new List<string> { "1", "2", "3" };
 
             var allTasks = requests.Select(n => Task.Run(async () =>
