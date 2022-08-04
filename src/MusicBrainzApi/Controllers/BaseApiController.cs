@@ -18,13 +18,12 @@ namespace MusicBrainzApi.Controllers
         protected IActionResult HandleException(Exception ex)
         {
             _logger.LogError(ex,ex.Message);
-            IActionResult ret;
-            if (ex is ArgumentException)
-                ret = StatusCode(StatusCodes.Status400BadRequest,ex.Message);
-            else 
-                ret = StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
-            return ret;
+            return ex switch
+            {
+                ArgumentException => StatusCode(StatusCodes.Status400BadRequest, ex.Message),
+                _ => StatusCode(StatusCodes.Status500InternalServerError, ex.Message)
+            };
         }
-        
+
     }
 }
