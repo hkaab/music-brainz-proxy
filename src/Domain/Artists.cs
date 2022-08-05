@@ -1,5 +1,4 @@
-﻿using System.Collections;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Runtime.Serialization;
 
 namespace Domain
@@ -14,6 +13,6 @@ namespace Domain
         public int Offset { get; set; }
 
         [DataMember(Name = "artists")]
-        public List<Artist>  Artists{ get; set; }
+        public List<Artist> Artists { get; set; }
     }
 }

@@ -39,7 +39,7 @@ namespace IntegrationTests
             Assert.Single(options.Value.GeneralRules);
             Assert.Equal("*", generalRule.Endpoint);
             Assert.Equal("1s", generalRule.Period);
-            Assert.Equal(1, generalRule.Limit);
+            Assert.Equal(10, generalRule.Limit);
         }
 
         [Fact]
@@ -168,7 +168,7 @@ namespace IntegrationTests
             using var factory = new WebApplicationFactory<Program>();
             var httpClient = factory.CreateClient().WithHttpsBaseAddress();
 
-            var requests = new List<string> { "1", "2", "3" };
+            var requests = Enumerable.Range(1, 12).ToArray();
             var allTasks = requests.Select(n => Task.Run(async () =>
             {
                 var result = await httpClient.GetStringAsync("/Artist/Query/janet%20%jackson");

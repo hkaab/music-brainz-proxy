@@ -1,7 +1,4 @@
 ﻿using Newtonsoft.Json;
-using Newtonsoft.Json.Linq;
-using Newtonsoft.Json.Schema;
-using Newtonsoft.Json.Schema.Generation;
 
 namespace Common.Extensions
 {
@@ -13,29 +10,17 @@ namespace Common.Extensions
             {
                 if (json == null)
                 {
-                    return default(T);
+                    return default;
                 }
 
-                JObject @object = JObject.Parse(json);
-                var schema = GenerateJsonSchema<T>();
-                if (@object.IsValid(schema))
-                    return JsonConvert.DeserializeObject<T>(json);
-                else
-                    return default(T);
+                 return JsonConvert.DeserializeObject<T>(json);
             }
             catch
             {
-                return default(T);
+                return default;
             }
 
         }
 
-        private static JSchema GenerateJsonSchema<T>() where T : class
-        {
-            JSchemaGenerator generator = new JSchemaGenerator();
-
-            JSchema schema = generator.Generate(typeof(T));
-            return schema;
-        }
     }
 }

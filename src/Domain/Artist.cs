@@ -6,7 +6,7 @@ namespace Domain
     [DataContract(Name = "artist")]
     public class Artist
     {
-        [DataMember(Name = "id",IsRequired = true)]
+        [DataMember(Name = "id", IsRequired = true)]
         public string Id { get; set; }
         [DataMember(Name = "name")]
         public string Name { get; set; }
