@@ -6,6 +6,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.OpenApi.Models;
+using MusicBrainzApi.Extensions;
 using MusicBrainzApi.Middleware;
 using Polly;
 using Polly.Extensions.Http;
@@ -25,6 +26,8 @@ namespace MusicBrainzApi
 
         public void ConfigureServices(IServiceCollection services)
         {
+            var applicationConfiguration = Configuration.ApplicationConfiguration();
+
             var retryPolicy = HttpPolicyExtensions.HandleTransientHttpError() 
                                        .WaitAndRetryAsync(GetMusicBrainzMaxRetry(), retryAttempt => TimeSpan.FromSeconds(retryAttempt));
 
@@ -33,6 +36,8 @@ namespace MusicBrainzApi
                 client.BaseAddress = new Uri(GetMusicBrainzBaseUrl());
                 client.DefaultRequestHeaders.Add("User-Agent", GetMusicBrainzUserAgent());
             }).AddPolicyHandler(retryPolicy);
+
+            services.AddHealthChecks(applicationConfiguration);
 
             services.AddScoped<IArtistService, ArtistService>();
 
@@ -46,15 +51,14 @@ namespace MusicBrainzApi
             services.AddSingleton<IProcessingStrategy, AsyncKeyLockProcessingStrategy>();
             services.AddInMemoryRateLimiting();
 
+            services.AddRedisCache(applicationConfiguration.ConnectionStrings.RedisConnection);
+
             services.AddSwaggerGen(c =>
             {
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "Coles MusicBrainz Api", Version = "v1" });
             });
+
         }
-
-
-
-        // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
             if (env.IsDevelopment())
@@ -63,6 +67,8 @@ namespace MusicBrainzApi
                 app.UseSwagger();
                 app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "MusicBrainz Api v1"));
             }
+
+            app.UseHealthCheckOptions();
 
             app.UseMiddleware<HealthCheckMiddleware>();
 

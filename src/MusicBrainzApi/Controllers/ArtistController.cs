@@ -7,6 +7,7 @@ using System;
 using System.Linq;
 using System.Threading.Tasks;
 using Common.Extensions;
+
 namespace MusicBrainzApi.Controllers
 {
     [ApiController]
@@ -14,7 +15,7 @@ namespace MusicBrainzApi.Controllers
     public class ArtistController : BaseApiController
     {
         private readonly IArtistService _artistService;
-        public ArtistController(IArtistService artistService, ILogger<ArtistController> logger) : base(logger)
+        public ArtistController(IArtistService artistService, ILogger<ArtistController> logger, IRedisCache redisCache) : base(logger,redisCache)
         {
             _artistService = artistService;
         }
@@ -31,9 +32,11 @@ namespace MusicBrainzApi.Controllers
         {
             try
             {
-                var artist = await _artistService.GetArtistByIdAsync(artistId);
-                if (artist == null || artist.Id==null)
+                var artist = await Cache.GetOrSetAsync(artistId, async () => await _artistService.GetArtistByIdAsync(artistId), CacheExpiry);
+
+                if (artist == null || artist.Id == null)
                     return NotFound();
+
                 return Ok(artist);
             }
             catch (Exception ex)
@@ -54,9 +57,11 @@ namespace MusicBrainzApi.Controllers
         {
             try
             {
-                var releases = await _artistService.GetArtistReleaseAsync(artistId);
+                var releases = await Cache.GetOrSetAsync(artistId, async () => await _artistService.GetArtistReleaseAsync(artistId), CacheExpiry);
+
                 if (releases == null || releases.Releases == null)
                     return NotFound();
+
                 return Ok(releases);
             }
             catch (Exception ex)
@@ -78,28 +83,38 @@ namespace MusicBrainzApi.Controllers
         {
             try
             {
-                var artistCollection = await _artistService.QueryArtistAsync(name, limit, offset);
+                var artist = await Cache.GetEntryAsync<Artist>(name);
+                if (artist != null)
+                    return Ok(artist);
+
+                var artistCollection = await Cache.GetEntryAsync<ArtistCollection>(name);
+                if (artistCollection != null)
+                    return Ok(artistCollection);
+
+                artistCollection = await _artistService.QueryArtistAsync(name, limit, offset);
                 if (artistCollection == null || artistCollection.Count == 0)
                     return NotFound();
 
-                var topPerformer = artistCollection.Artists.OrderByDescending(a => a.Score)
+                artist = artistCollection.Artists.OrderByDescending(a => a.Score)
                                                            .Where(a => a.Score == 100)
                                                            .FirstOrDefault();
-                if (topPerformer != null)
+                if (artist != null)
                 {
-                    var artist = await _artistService.GetArtistByIdAsync(topPerformer.Id);
+                    artist = await _artistService.GetArtistByIdAsync(artist.Id);
+                    await Cache.SetEntryAsync(name, artist, CacheExpiry);
                     return Ok(artist);
                 }
 
 
                 if (artistCollection.Count == 1)
                 {
-                    var artist = await _artistService.GetArtistByIdAsync(artistCollection.Artists[0].Id);
+                    artist = await _artistService.GetArtistByIdAsync(artistCollection.Artists[0].Id);
+                    await Cache.SetEntryAsync(name, artist, CacheExpiry);
                     return Ok(artist);
                 }
 
                 artistCollection.Artists = artistCollection.Artists.OrderBy(sort).ToList();
-
+                await Cache.SetEntryAsync(name, artistCollection, CacheExpiry);
                 return Ok(artistCollection);
             }
             catch (Exception ex)

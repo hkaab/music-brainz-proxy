@@ -16,12 +16,14 @@ namespace UnitTests.Controllers
     {
         private readonly Mock<IArtistService> _mockArtistService;
         private readonly Mock<ILogger<ArtistController>> _mockLogger;
+        private readonly Mock<IRedisCache> _mockRedisCache;
         private readonly ArtistController _artistController;
         public ArtistControllerTests()
         {
             _mockArtistService = new Mock<IArtistService>();
             _mockLogger = new Mock<ILogger<ArtistController>>();
-            _artistController = new ArtistController(_mockArtistService.Object, _mockLogger.Object);
+            _mockRedisCache = new Mock<IRedisCache>();
+            _artistController = new ArtistController(_mockArtistService.Object, _mockLogger.Object, _mockRedisCache.Object);
         }
 
         [Fact]

@@ -13,7 +13,7 @@ namespace Common.Extensions
                     return default;
                 }
 
-                 return JsonConvert.DeserializeObject<T>(json);
+                return JsonConvert.DeserializeObject<T>(json);
             }
             catch
             {
@@ -21,6 +21,5 @@ namespace Common.Extensions
             }
 
         }
-
     }
 }

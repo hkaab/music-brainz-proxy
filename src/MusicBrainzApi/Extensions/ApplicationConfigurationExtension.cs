@@ -1,13 +1,18 @@
 ﻿using Microsoft.Extensions.Configuration;
+using MusicBrainzApi.Core;
 
 namespace MusicBrainzApi.Extensions
 {
     public static class ApplicationConfigurationExtension
     {
-        public static IConfigurationSection ApplicationConfiguration(this IConfiguration configuration)
+        public static ApplicationConfiguration ApplicationConfiguration(this IConfiguration configuration)
         {
-     
-            return null;
+            var applicationConfiguration = configuration.Get<ApplicationConfiguration>();
+            if (applicationConfiguration.KeyVault.Enabled)
+            {
+                applicationConfiguration.WithKeyVaultSecrets(configuration);
+            }
+            return applicationConfiguration;
         }
     }
 

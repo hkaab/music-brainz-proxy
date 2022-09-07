@@ -23,6 +23,7 @@ namespace Services
             {
                 throw new ArgumentException("Artist Id must be specified.");
             }
+
             var uri = string.Format(GetArtistTemplate, id);
 
             var json = await Invoke(uri);
