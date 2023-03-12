@@ -1,5 +1,4 @@
 ﻿using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.DependencyInjection;
 using System.Security.Cryptography.X509Certificates;
 using System;
 using MusicBrainzApi.Core;
