@@ -1,4 +1,4 @@
-# Coles MusicBrainz API version 2.0 
+# MusicBrainz API version 2.0 
 
 ![workflow](https://github.com/hkaabasl/MusicBrainzProxy/actions/workflows/ci.yml/badge.svg)
 ![workflow](https://github.com/hkaabasl/MusicBrainzProxy/actions/workflows/ut.yml/badge.svg)
