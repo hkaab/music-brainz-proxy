@@ -1,7 +1,6 @@
 ﻿using System.Collections.Generic;
 using Microsoft.OpenApi.Any;
 using Microsoft.OpenApi.Models;
-using MYOB.Huxley.Utilities;
 using Swashbuckle.AspNetCore.SwaggerGen;
 
 namespace MusicBrainzApi.Extensions
