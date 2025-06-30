@@ -1,7 +1,3 @@
-Certainly! Here's a structured README template tailored for your GitHub repository, [hkaab/music-brainz-proxy](https://github.com/hkaab/music-brainz-proxy):
-
----
-
 # Music Brainz Proxy
 
 A lightweight proxy server for interfacing with the MusicBrainz web service, designed to mitigate IP rate-limiting issues.
