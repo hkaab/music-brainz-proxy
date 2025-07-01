@@ -1,5 +1,8 @@
 # Music Brainz Proxy
 
+![workflow](https://github.com/hkaabasl/MusicBrainzProxy/actions/workflows/ci.yml/badge.svg)
+![workflow](https://github.com/hkaabasl/MusicBrainzProxy/actions/workflows/ut.yml/badge.svg)
+
 A lightweight proxy server for interfacing with the MusicBrainz web service, designed to mitigate IP rate-limiting issues.
 
 ## Features
