@@ -32,6 +32,9 @@ namespace MusicBrainzApi.Controllers
         {
             try
             {
+                if (string.IsNullOrEmpty(artistId))
+                    return BadRequest("Artist Id must be specified.");
+
                 var artist = await Cache.GetOrSetAsync(artistId, async () => await _artistService.GetArtistByIdAsync(artistId), CacheExpiry);
 
                 if (artist == null || artist.Id == null)
@@ -57,6 +60,9 @@ namespace MusicBrainzApi.Controllers
         {
             try
             {
+                if (string.IsNullOrEmpty(artistId))
+                    return BadRequest("Artist Id must be specified.");  
+
                 var releases = await Cache.GetOrSetAsync(artistId, async () => await _artistService.GetArtistReleaseAsync(artistId), CacheExpiry);
 
                 if (releases == null || releases.Releases == null)

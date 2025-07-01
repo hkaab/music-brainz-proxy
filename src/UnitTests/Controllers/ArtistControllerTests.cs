@@ -10,6 +10,9 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using Xunit;
 
+// <summary>
+// Unit tests for the ArtistController class    
+ 
 namespace UnitTests.Controllers
 {
     public class ArtistControllerTests
@@ -29,10 +32,22 @@ namespace UnitTests.Controllers
         [Fact]
         public async void GetArtistByIdAsync_WhenCalledWithValidParam_ReturnsArtist()
         {
-            var expected = new Artist { Id="FakeId"};
-            _mockArtistService.Setup(service => service.GetArtistByIdAsync("d51fad9c-5fda-4507-b258-c7ce4b435972")).Returns(Task.FromResult(expected));
+            // Arrange
+            var expected = new Artist { Id = "d51fad9c-5fda-4507-b258-c7ce4b435972" };
+
+            _mockArtistService.Setup(service => service.GetArtistByIdAsync("d51fad9c-5fda-4507-b258-c7ce4b435972"))
+                .Returns(Task.FromResult(expected));
+
+            _mockRedisCache.Setup(cache => cache.GetOrSetAsync(
+                It.IsAny<string>(), 
+                It.IsAny<Func<Task<Artist>>>(), 
+                It.IsAny<TimeSpan>())) //
+                .Returns(Task.FromResult(expected));
+
+            // Act
             var result = (ObjectResult)await _artistController.GetArtistByIdAsync("d51fad9c-5fda-4507-b258-c7ce4b435972");
 
+            // Assert
             Assert.IsType<Artist>(result.Value);
             Assert.Equal(expected, result.Value);
             Assert.Equal(StatusCodes.Status200OK, result.StatusCode);
@@ -41,20 +56,27 @@ namespace UnitTests.Controllers
         [Fact]
         public async void GetArtistByIdAsync_WhenCalledWithValidParamWithNoResult_ReturnsNotFoundResult()
         {
-            var expected = new Artist ();
+            // Arrange
+            var expected = new Artist();
             _mockArtistService.Setup(service => service.GetArtistByIdAsync("d51fad9c-5fda-4507-b258-c7ce4b435972")).Returns(Task.FromResult(expected));
+
+            // Act
             var result = await _artistController.GetArtistByIdAsync("d51fad9c-5fda-4507-b258-c7ce4b435972");
+
+            // Assert
             Assert.IsType<NotFoundResult>(result);
         }
 
         [Fact]
         public async void GetArtistByIdAsync_WhenCalledWithInvalidParam_ReturnsStatus400BadRequest()
         {
+            // Arrange
             var expected = "Artist Id must be specified.";
-            _mockArtistService.Setup(service => service.GetArtistByIdAsync(null)).Throws(new ArgumentException(expected));
 
+            // Act
             var result = (ObjectResult)await _artistController.GetArtistByIdAsync(null);
 
+            // Assert
             Assert.Equal(expected, result.Value);
             Assert.Equal(StatusCodes.Status400BadRequest, result.StatusCode);
         }
@@ -62,9 +84,21 @@ namespace UnitTests.Controllers
         [Fact]
         public async void GetArtistByIdAsync_WhenException_ReturnsStatus500InternalServerError()
         {
+            // Arrange
             var expected = "Internal Server Error";
+
+            _mockRedisCache.Setup(cache => cache.GetOrSetAsync(
+                It.IsAny<string>(), 
+                It.IsAny<Func<Task<Artist>>>(), 
+                It.IsAny<TimeSpan>()))
+                .Throws(new Exception(expected));
+
             _mockArtistService.Setup(service => service.GetArtistByIdAsync("fakeid")).Throws(new Exception(expected));
+
+            // Act
             var result = (ObjectResult)await _artistController.GetArtistByIdAsync("fakeid");
+
+            // Assert
             Assert.Equal(expected, result.Value);
             Assert.Equal(StatusCodes.Status500InternalServerError, result.StatusCode);
         }
@@ -72,14 +106,24 @@ namespace UnitTests.Controllers
         [Fact]
         public async void GetArtistReleaseAsync_WhenCalledWithValidParam_ReturnsReleaseCollection()
         {
+            // Arrange
             var expected = new ReleaseCollection
             {
                 Releases = new List<Release>()
             };
 
+            _mockRedisCache.Setup(cache => cache.GetOrSetAsync(
+                It.IsAny<string>(), 
+                It.IsAny<Func<Task<ReleaseCollection>>>(), 
+                It.IsAny<TimeSpan>()))
+                .Returns(Task.FromResult(expected));
+
             _mockArtistService.Setup(service => service.GetArtistReleaseAsync("d51fad9c-5fda-4507-b258-c7ce4b435972")).Returns(Task.FromResult(expected));
+
+            // Act
             var result = (ObjectResult)await _artistController.GetArtistReleaseAsync("d51fad9c-5fda-4507-b258-c7ce4b435972");
 
+            // Assert
             Assert.IsType<ReleaseCollection>(result.Value);
             Assert.Equal(expected, result.Value);
             Assert.Equal(StatusCodes.Status200OK, result.StatusCode);
@@ -88,20 +132,28 @@ namespace UnitTests.Controllers
         [Fact]
         public async void GetArtistReleaseAsync_WhenCalledWithValidParamWithNoResult_ReturnsNotFoundResult()
         {
+            // Arrange
             var expected = new ReleaseCollection();
 
             _mockArtistService.Setup(service => service.GetArtistReleaseAsync("d51fad9c-5fda-4507-b258-c7ce4b435972")).Returns(Task.FromResult(expected));
+
+            // Act
             var result = await _artistController.GetArtistReleaseAsync("d51fad9c-5fda-4507-b258-c7ce4b435972");
+
+            // Assert   
             Assert.IsType<NotFoundResult>(result);
         }
 
         [Fact]
         public async void GetArtistReleaseAsync_WhenCalledWithInvalidParam_ReturnsStatus400BadRequest()
         {
+            // Arrange
             var expected = "Artist Id must be specified.";
-            _mockArtistService.Setup(service => service.GetArtistReleaseAsync(null)).Throws(new ArgumentException(expected));
+
+            // Act
             var result = (ObjectResult)await _artistController.GetArtistReleaseAsync(null);
 
+            // Assert
             Assert.Equal(expected, result.Value);
             Assert.Equal(StatusCodes.Status400BadRequest, result.StatusCode);
         }
@@ -109,10 +161,20 @@ namespace UnitTests.Controllers
         [Fact]
         public async void GetArtistReleaseAsync_WhenException_ReturnsStatus500InternalServerError()
         {
+            // Arrange
             var expected = "Internal Server Error";
+            _mockRedisCache.Setup( service => service.GetOrSetAsync(
+                It.IsAny<string>(), 
+                It.IsAny<Func<Task<ReleaseCollection>>>(), 
+                It.IsAny<TimeSpan>()))
+                .Throws(new Exception(expected));
+
             _mockArtistService.Setup(service => service.GetArtistReleaseAsync("fakeid")).Throws(new Exception(expected));
+
+            // Act
             var result = (ObjectResult)await _artistController.GetArtistReleaseAsync("fakeid");
 
+            // Assert
             Assert.Equal(expected, result.Value);
             Assert.Equal(StatusCodes.Status500InternalServerError, result.StatusCode);
         }

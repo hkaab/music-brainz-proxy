@@ -1,7 +1,5 @@
 ﻿using Common.Extensions;
-using Domain;
 using Interfaces;
-using Newtonsoft.Json.Linq;
 using StackExchange.Redis;
 using System;
 using System.Threading.Tasks;
