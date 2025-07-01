@@ -17,19 +17,19 @@ namespace MusicBrainzApi.Extensions
         public RequestHeadersInitializer(IHttpContextAccessor httpContextAccessor)
         {
             RequestHeaders = new List<string>
-            {
-                HeaderConstants.RequestHeaderKeys.Referer,
-                HeaderConstants.RequestHeaderKeys.UserAgent,
-                HeaderConstants.RequestHeaderKeys.Host,
-                HeaderConstants.RequestHeaderKeys.AcceptLanguage,
-                HeaderConstants.RequestHeaderKeys.Origin
-            };
+                    {
+                        HeaderConstants.RequestHeaderKeys.Referer,
+                        HeaderConstants.RequestHeaderKeys.UserAgent,
+                        HeaderConstants.RequestHeaderKeys.Host,
+                        HeaderConstants.RequestHeaderKeys.AcceptLanguage,
+                        HeaderConstants.RequestHeaderKeys.Origin
+                    };
             ResponseHeaders = new List<string>
-            {
-                HeaderConstants.ResponseHeaderKeys.CacheControl,
-                HeaderConstants.ResponseHeaderKeys.AllowedOrigins,
-                HeaderConstants.ResponseHeaderKeys.CSP
-            };
+                    {
+                        HeaderConstants.ResponseHeaderKeys.CacheControl,
+                        HeaderConstants.ResponseHeaderKeys.AllowedOrigins,
+                        HeaderConstants.ResponseHeaderKeys.CSP
+                    };
             _httpContextAccessor = httpContextAccessor;
         }
 
@@ -61,7 +61,7 @@ namespace MusicBrainzApi.Extensions
                 var requestHeaderKeyName = $"{ApplicationInsightsRequestHeaderPrefix}: {header.Key}";
                 if (!telemetry.Context.GlobalProperties.ContainsKey(requestHeaderKeyName))
                 {
-                    telemetry.Context.GlobalProperties.Add(requestHeaderKeyName, string.Join(Environment.NewLine, header.Value.ToEnumerable()));
+                    telemetry.Context.GlobalProperties.Add(requestHeaderKeyName, string.Join(Environment.NewLine, header.Value.ToArray()));
                 }
             });
 
@@ -75,7 +75,7 @@ namespace MusicBrainzApi.Extensions
                 var responseHeaderKeyName = $"{ApplicationInsightsResponseHeaderPrefix}: {header.Key}";
                 if (!telemetry.Context.GlobalProperties.ContainsKey(responseHeaderKeyName))
                 {
-                    telemetry.Context.GlobalProperties.Add(responseHeaderKeyName, string.Join(Environment.NewLine, header.Value.ToEnumerable()));
+                    telemetry.Context.GlobalProperties.Add(responseHeaderKeyName, string.Join(Environment.NewLine, header.Value.ToArray()));
                 }
             });
         }

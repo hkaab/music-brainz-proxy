@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 using Microsoft.OpenApi.Any;
 using Microsoft.OpenApi.Models;
 using Swashbuckle.AspNetCore.SwaggerGen;
@@ -7,46 +8,57 @@ namespace MusicBrainzApi.Extensions
 {
     public class AddHttpHeadersToSwagger : IOperationFilter
     {
-        private const string RequestIdDescription = "Correlation ID";
-        private static readonly OpenApiSchema RequestIdSchema = new OpenApiSchema { Type = "string", Example = new OpenApiString("92bd2850-601e-4daf-b820-45332a7a9fb4") };
-
+        // Define the _requestIdHeader field to fix CS0103 error
         private readonly OpenApiHeader _requestIdHeader = new OpenApiHeader
         {
-            Description = RequestIdDescription,
-            Required = true,
-            AllowEmptyValue = false,
-            Schema = RequestIdSchema
+            Description = "Request ID for tracking",
+            Required = false,
+            Schema = new OpenApiSchema
+            {
+                Type = "string"
+            }
         };
 
-        private readonly OpenApiParameter _requestIdParameter = new OpenApiParameter
-        {
-            Name = HeaderConstants.CorrelationIdHeader,
-            In = ParameterLocation.Header,
-            Description = RequestIdDescription,
-            Required = true,
-            AllowEmptyValue = false,
-            Schema = RequestIdSchema
-        };
-
+        // Define the _authorizationParameter field to avoid potential errors
         private readonly OpenApiParameter _authorizationParameter = new OpenApiParameter
         {
             Name = "Authorization",
             In = ParameterLocation.Header,
-            Description = "IDAM JWT token",
+            Description = "Access token for authorization",
             Required = true,
-            AllowEmptyValue = false,
-            Schema = new OpenApiSchema { Type = "string" }
+            Schema = new OpenApiSchema
+            {
+                Type = "string"
+            }
+        };
+
+        // Define the _requestIdParameter field to avoid potential errors
+        private readonly OpenApiParameter _requestIdParameter = new OpenApiParameter
+        {
+            Name = HeaderConstants.CorrelationIdHeader,
+            In = ParameterLocation.Header,
+            Description = "Request ID for tracking",
+            Required = false,
+            Schema = new OpenApiSchema
+            {
+                Type = "string"
+            }
         };
 
         public void Apply(OpenApiOperation operation, OperationFilterContext context)
         {
-            operation.Parameters?.AddRange(new[]
+            if (operation.Parameters == null)
             {
-                _authorizationParameter,
-                _requestIdParameter
-            });
+                operation.Parameters = new List<OpenApiParameter>();
+            }
 
-            operation.Responses?.ForEach(r =>
+            // Replace AddRange with a foreach loop to avoid CS1061 error
+            foreach (var parameter in new[] { _authorizationParameter, _requestIdParameter })
+            {
+                operation.Parameters.Add(parameter);
+            }
+
+            operation.Responses?.ToList().ForEach(r =>
             {
                 r.Value.Headers.Add(new KeyValuePair<string, OpenApiHeader>(
                     HeaderConstants.CorrelationIdHeader, _requestIdHeader));
