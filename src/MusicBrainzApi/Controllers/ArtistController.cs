@@ -89,6 +89,10 @@ namespace MusicBrainzApi.Controllers
         {
             try
             {
+               
+                if (string.IsNullOrEmpty(name))
+                    return BadRequest("Artist name must be specified.");
+
                 var artist = await Cache.GetEntryAsync<Artist>(name);
                 if (artist != null)
                     return Ok(artist);
